@@ -48,6 +48,11 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-client</artifactId>
 		</dependency>
+		<!--For decrypting the config from config server (make sure ENCRYPT_KEY env variable is set)-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-rsa</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
