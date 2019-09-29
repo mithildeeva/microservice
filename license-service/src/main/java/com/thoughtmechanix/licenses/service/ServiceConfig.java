@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ServiceConfig {
-    @Value("${example.property}")
+    @Value("${spring.application.name}")
     @Getter
     private String exampleProperty;
 }
