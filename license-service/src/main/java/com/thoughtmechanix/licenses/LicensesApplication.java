@@ -2,7 +2,12 @@ package com.thoughtmechanix.licenses;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 /*
@@ -15,10 +20,29 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 * and its dependencies re-injected, at which point they will be re-initialized from the refreshed @Configuration).
 * */
 @RefreshScope
+/*
+* trigger for Spring Cloud to enable
+* the application to use the DiscoveryClient (used only in 1st client's case
+* [DiscoveryClient without enhanced RestTemplate])
+* (to discovery services from Eureka server)
+* */
+@EnableDiscoveryClient
+/*
+* a declarative REST client for Spring Boot apps (used only in 3rd client's case)
+* (alternative for DiscoveryClient)
+* */
+@EnableFeignClients(basePackageClasses = LicensesApplication.class)
 public class LicensesApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LicensesApplication.class, args);
-	}
+	public static void main(String[] args) { SpringApplication.run(LicensesApplication.class, args); }
 
+	/*
+	* Tells Spring Cloud that we want to take advantage of its load balancing support
+	* (Ribbon)
+	* */
+	@LoadBalanced
+	@Bean
+	public RestTemplate getDiscoveryTemplate() {
+		return new RestTemplate();
+	}
 }

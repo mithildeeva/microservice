@@ -2,10 +2,7 @@ package com.thoughtmechanix.licenses.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -32,4 +29,16 @@ public class License {
 
     @Column(name="comment")
     private String comment;
+
+    @Transient
+    private String organizationName ="";
+
+    @Transient
+    private String contactName ="";
+
+    @Transient
+    private String contactPhone ="";
+
+    @Transient
+    private String contactEmail ="";
 }
