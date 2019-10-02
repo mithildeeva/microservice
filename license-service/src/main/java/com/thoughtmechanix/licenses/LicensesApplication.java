@@ -31,7 +31,7 @@ import org.springframework.web.client.RestTemplate;
 * a declarative REST client for Spring Boot apps (used only in 3rd client's case)
 * (alternative for DiscoveryClient)
 * */
-@EnableFeignClients(basePackageClasses = LicensesApplication.class)
+@EnableFeignClients
 public class LicensesApplication {
 
 	public static void main(String[] args) { SpringApplication.run(LicensesApplication.class, args); }
