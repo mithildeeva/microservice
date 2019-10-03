@@ -1,5 +1,6 @@
 package com.thoughtmechanix.licenses.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.thoughtmechanix.licenses.eureka.clients.OrganizationDiscoveryClient;
@@ -17,6 +18,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+/*
+* Default Hystrix properties on class level
+* All HystrixCommand in the class share this property unless overridden there
+* */
+@DefaultProperties(
+        commandProperties = {
+                @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "10000")
+        })
 public class LicenseService {
 
     private LicenseRepository licenseRepo;
@@ -85,13 +94,40 @@ public class LicenseService {
             * customize the behavior of the circuit breaker
             * */
             commandProperties = {
-                    @HystrixProperty(
-                            /*
-                            * Circuit-breaker timeout limit
-                            * */
-                            name = "execution.isolation.thread.timeoutInMilliseconds",
-                            value = "2000" // milliseconds
-                    )
+                        /*
+                        * Circuit-breaker timeout limit
+                        * */
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000"),
+                     /*
+                    * This property sets the minimum number of requests in a rolling window that will trip the circuit.
+                    * For example, if the value is 20, then if only 19 requests are received in the rolling window
+                    * (say a window of 10 seconds) the circuit will not trip open even if all 19 failed.
+                    * */
+                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "10"),
+                    /*
+                    * Percentage of requests that should fail in the rollingStats time to trip the circuit
+                    * */
+                    @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "75"),
+                    /*
+                    * This property sets the amount of time, after tripping the circuit,
+                    * to reject requests before allowing attempts again to determine if
+                    * the circuit should again be closed.
+                    * */
+                    @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "7000"),
+                    /*
+                    * This property sets the duration of the statistical rolling window,
+                    * in milliseconds. This is how long Hystrix keeps metrics for
+                    * the circuit breaker to use and for publishing.
+                    * */
+                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "15000"),
+                    /*
+                    * The bucket in which the metrics will be calculated. (In every 5 seconds,
+                    * metrics will be calculated for 15000 milliseconds)
+                    *
+                    * The following must be true —
+                    * “metrics.rollingStats.timeInMilliseconds % metrics.rollingStats.numBuckets == 0”
+                    * */
+                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "5"),
             },
             /*
             * defines a single function in your
