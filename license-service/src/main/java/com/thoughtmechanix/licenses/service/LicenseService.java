@@ -12,6 +12,7 @@ import com.thoughtmechanix.licenses.util.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -89,13 +90,51 @@ public class LicenseService {
                             * Circuit-breaker timeout limit
                             * */
                             name = "execution.isolation.thread.timeoutInMilliseconds",
-                            value = "12000" // milliseconds
+                            value = "2000" // milliseconds
                     )
+            },
+            /*
+            * defines a single function in your
+            * class that will be called if the call from Hystrix fails.
+            * */
+            fallbackMethod = "fallbackForGetLicensesByOrg",
+            /*
+            * Bulkhead
+            * By default hysterix uses a common connection pool (of size 10)
+            * to wrap methods. This can starve services if a single one is called alot,
+            * and takes alot of time.
+            * To prevent it we can assing threadpool at class/method level
+            * uniquely identified by threadPoolKey
+            * */
+            threadPoolKey = "licenseByOrgThreadPool",
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize", value = "20"),
+                    /*
+                    * Threadpool's queue (if all threads are busy)
+                    * */
+                    @HystrixProperty(name = "maxQueueSize", value = "10"),
             }
     )
     public List<License> getLicensesByOrg(String orgId) {
         Utility.randomlySleep(11, 3);
         return licenseRepo.findByOrgId(orgId);
+    }
+
+    /**
+     * 1. fallback method must have same definition as the original method
+     * 2. If making call to another external entity here,
+     * it should be wrapped in another HystrixCommand
+     */
+    public List<License> fallbackForGetLicensesByOrg(String orgId) {
+        List<License> licenses = new ArrayList<>();
+
+        License license = new License();
+        license.setId("0000-00000-00000");
+        license.setOrgId(orgId);
+        license.setProductName("No info available (message from fallback)");
+
+        licenses.add(license);
+        return licenses;
     }
 
     public void saveLicense(License license){

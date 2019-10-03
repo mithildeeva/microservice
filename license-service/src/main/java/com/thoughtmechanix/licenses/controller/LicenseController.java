@@ -55,7 +55,7 @@ public class LicenseController {
         return service.getLicense(orgId, licenseId, "neflixfeignclient");
     }
 
-    @GetMapping
+    @GetMapping(value = "/hystrix")
     public List<License> getByOrgId(@PathVariable("orgId") String orgId) {
         return service.getLicensesByOrg(orgId);
     }
