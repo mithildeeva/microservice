@@ -2,6 +2,7 @@ package com.thoughtmechanix.licenses;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -32,6 +33,10 @@ import org.springframework.web.client.RestTemplate;
 * (alternative for DiscoveryClient)
 * */
 @EnableFeignClients
+/*
+* It will scan the classpath for any compatible Circuit Breaker implementation (Netflix Hystrix)
+* */
+@EnableCircuitBreaker
 public class LicensesApplication {
 
 	public static void main(String[] args) { SpringApplication.run(LicensesApplication.class, args); }

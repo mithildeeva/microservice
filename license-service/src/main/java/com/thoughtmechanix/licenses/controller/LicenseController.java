@@ -5,6 +5,8 @@ import com.thoughtmechanix.licenses.service.LicenseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/v1/organizations/{orgId}/licenses")
 public class LicenseController {
@@ -51,5 +53,10 @@ public class LicenseController {
             @PathVariable("licenseId") String licenseId
     ) {
         return service.getLicense(orgId, licenseId, "neflixfeignclient");
+    }
+
+    @GetMapping
+    public List<License> getByOrgId(@PathVariable("orgId") String orgId) {
+        return service.getLicensesByOrg(orgId);
     }
 }
