@@ -1,0 +1,39 @@
+server:
+  port: 5555
+eureka:
+ instance:
+  preferIpAddress: true
+ client:
+  registerWithEureka: true
+  fetchRegistry: true
+  serviceUrl:
+    defaultZone: http://localhost:8761/eureka/
+
+# To make an actuator endpoint available via HTTP, it needs to be both enabled and exposed.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+# Zuul allow us to explicitly define route
+#  mappings rather than relying solely on the automated routes created with the service’s
+#  Eureka service ID
+#zuul:
+# ignored-services: '*'
+# routes:
+#  organizationservice: /organization/**
+
+zuul:
+  prefix: /api
+
+hystrix:
+ command:
+  default:
+   execution:
+    isolation:
+     thread:
+      timeoutInMilliseconds: 1100
+ribbon:
+ ConnectTimeout: 10000
+ ReadTimeout: 10000
