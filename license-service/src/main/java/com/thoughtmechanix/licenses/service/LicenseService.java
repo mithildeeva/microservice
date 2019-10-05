@@ -10,6 +10,7 @@ import com.thoughtmechanix.licenses.model.License;
 import com.thoughtmechanix.licenses.model.Organization;
 import com.thoughtmechanix.licenses.repository.LicenseRepository;
 import com.thoughtmechanix.licenses.util.Utility;
+import com.thoughtmechanix.licenses.util.context.UserContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -152,7 +153,8 @@ public class LicenseService {
             }
     )
     public List<License> getLicensesByOrg(String orgId) {
-        Utility.randomlySleep(11, 3);
+        System.out.println("LicenseService Correlation id: " + UserContextHolder.getContext().getCorrelationId());
+        Utility.randomlySleep(1, 3);
         return licenseRepo.findByOrgId(orgId);
     }
 

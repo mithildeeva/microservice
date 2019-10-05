@@ -2,6 +2,7 @@ package com.thoughtmechanix.licenses.controller;
 
 import com.thoughtmechanix.licenses.model.License;
 import com.thoughtmechanix.licenses.service.LicenseService;
+import com.thoughtmechanix.licenses.util.context.UserContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +58,7 @@ public class LicenseController {
 
     @GetMapping(value = "/hystrix")
     public List<License> getByOrgId(@PathVariable("orgId") String orgId) {
+        System.out.println("LicenseServiceController Correlation id: " + UserContextHolder.getContext().getCorrelationId());
         return service.getLicensesByOrg(orgId);
     }
 }
