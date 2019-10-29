@@ -1,5 +1,7 @@
 package com.thoughtmechanix.licenses;
 
+import com.thoughtmechanix.licenses.events.CustomStreamChannels;
+import com.thoughtmechanix.licenses.model.message.OrganizationChange;
 import com.thoughtmechanix.licenses.util.context.UserContextInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +10,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,6 +46,20 @@ import java.util.List;
 * It will scan the classpath for any compatible Circuit Breaker implementation (Netflix Hystrix)
 * */
 @EnableCircuitBreaker
+/*
+* The @EnableBinding annotation tells the service
+* to the use the channels defined in the Sink
+* interface to listen for incoming messages.
+*
+* This annotation can be moved anywhere
+* */
+@EnableBinding(Sink.class)
+/*
+* For Custom Channels
+*
+* There can be multiple of these annotations (class-level)
+* */
+//@EnableBinding(CustomStreamChannels.class)
 public class LicensesApplication {
 
 	public static void main(String[] args) { SpringApplication.run(LicensesApplication.class, args); }
@@ -64,5 +83,19 @@ public class LicensesApplication {
 		}
 
 		return restTemplate;
+	}
+
+	/*
+	* Tells Spring Cloud Stream to execute the
+	* loggerSink() method every time a message is received off
+	* the "input" channel (which is mentioned in the config)
+	* */
+	@StreamListener(Sink.INPUT)
+	/*
+	* For custom channels
+	* */
+//	@StreamListener("inboundOrgChanges")
+	public void loggerSink(OrganizationChange change) {
+		System.out.printf("Received an event for org ID: %s", change.getOrgId());
 	}
 }

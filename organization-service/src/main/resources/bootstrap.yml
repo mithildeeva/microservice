@@ -1,3 +1,5 @@
+encrypt:
+  key: IH0p3iDontforgetThisK
 spring:
   application:
     name: organizationservice

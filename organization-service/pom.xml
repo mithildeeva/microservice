@@ -64,6 +64,11 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-client</artifactId>
 		</dependency>
+		<!--For publishing messages-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>

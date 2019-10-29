@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,6 +17,17 @@ import java.util.List;
 @SpringBootApplication
 @RefreshScope
 @EnableCircuitBreaker
+/*
+* The @EnableBinding annotation tells
+* Spring Cloud Stream to bind the
+* application to a message broker.
+*
+* The use of Source.class in the
+* @EnableBinding annotation tells Spring Cloud Stream
+* that this service will communicate with the message broker
+* via a set of channels defined on the Source class.
+* */
+@EnableBinding(Source.class)
 public class OrganizationsApplication {
 
 	public static void main(String[] args) {
